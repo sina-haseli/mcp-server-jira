@@ -1,0 +1,26 @@
+{
+  "name": "mcp-server-jira",
+  "version": "1.0.0",
+  "description": "MCP server for managing Jira Stories in a self-hosted Jira instance (PRD automation workflow)",
+  "main": "dist/index.js",
+  "bin": {
+    "mcp-server-jira": "dist/index.js"
+  },
+  "type": "commonjs",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node src/index.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "latest",
+    "axios": "^1.6.0",
+    "dotenv": "^16.0.0",
+    "zod": "^3.25.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "ts-node": "^10.9.0",
+    "typescript": "^5.0.0"
+  }
+}
