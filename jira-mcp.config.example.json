@@ -1,0 +1,9 @@
+{
+  "baseUrl": "https://jira.yourcompany.com",
+  "userEmail": "you@yourcompany.com",
+  "apiToken": "your_api_token_here",
+  "projectKey": "PRD",
+  "storyIssueType": "Story",
+  "outlineLinkField": "customfield_10100",
+  "storyPointsField": "customfield_10016"
+}
