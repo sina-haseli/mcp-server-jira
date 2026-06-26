@@ -4,11 +4,12 @@ import { z } from "zod";
 import { config } from "../config";
 import { browseUrl, http } from "../jira/client";
 import { fail, ok, toToolError } from "../jira/errors";
-import { registerTool } from "./shared";
+import { projectKeyField, registerTool, resolveProject } from "./shared";
 
 interface SearchStoriesArgs {
   query: string;
   max_results?: number;
+  project_key?: string;
 }
 
 const shape: z.ZodRawShape = {
@@ -22,6 +23,7 @@ const shape: z.ZodRawShape = {
     .positive()
     .optional()
     .describe("Maximum results to return (default 10)"),
+  project_key: projectKeyField,
 };
 
 /** Escape characters that would break a JQL quoted string. */
@@ -38,9 +40,11 @@ export function registerSearchStories(server: McpServer): void {
     { readOnlyHint: true, openWorldHint: true },
     async (rawArgs) => {
       const args = rawArgs as unknown as SearchStoriesArgs;
+      const project = resolveProject(args.project_key);
+      if ("error" in project) return project.error;
       try {
         const maxResults = args.max_results ?? 10;
-        const jql = `project = "${escapeJql(config.projectKey)}" AND issuetype = ${config.storyIssueType} AND text ~ "${escapeJql(
+        const jql = `project = "${escapeJql(project.key)}" AND issuetype = ${config.storyIssueType} AND text ~ "${escapeJql(
           args.query
         )}" ORDER BY created DESC`;
 

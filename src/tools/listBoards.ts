@@ -1,13 +1,13 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 
-import { config } from "../config";
 import { agile } from "../jira/client";
 import { fail, ok, toToolError } from "../jira/errors";
-import { registerTool } from "./shared";
+import { projectKeyField, registerTool, resolveProject } from "./shared";
 
 interface ListBoardsArgs {
   all_projects?: boolean;
+  project_key?: string;
 }
 
 const shape: z.ZodRawShape = {
@@ -15,8 +15,9 @@ const shape: z.ZodRawShape = {
     .boolean()
     .optional()
     .describe(
-      "If true, list boards across all projects; otherwise only boards for the configured project (default)."
+      "If true, list boards across all projects; otherwise only boards for the target project (default)."
     ),
+  project_key: projectKeyField,
 };
 
 export function registerListBoards(server: McpServer): void {
@@ -30,7 +31,11 @@ export function registerListBoards(server: McpServer): void {
       const args = rawArgs as unknown as ListBoardsArgs;
       try {
         const params: Record<string, unknown> = { maxResults: 50 };
-        if (!args.all_projects) params.projectKeyOrId = config.projectKey;
+        if (!args.all_projects) {
+          const project = resolveProject(args.project_key);
+          if ("error" in project) return project.error;
+          params.projectKeyOrId = project.key;
+        }
 
         const { data } = await agile.get(`/board`, { params });
         const boards = (data.values ?? []).map((b: any) => ({
