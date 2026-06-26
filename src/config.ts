@@ -7,7 +7,8 @@ export interface AppConfig {
   apiBase: string;
   userEmail: string;
   apiToken: string;
-  projectKey: string;
+  /** Default project key. Optional — tools accept a per-call project_key override. */
+  projectKey?: string;
   storyIssueType: string;
   /** Custom field id for the Outline PRD link. */
   outlineLinkField?: string;
@@ -54,13 +55,13 @@ function loadConfig(): AppConfig {
   const baseUrlRaw = process.env.JIRA_BASE_URL ?? file.baseUrl;
   const userEmail = process.env.JIRA_USER_EMAIL ?? file.userEmail;
   const apiToken = process.env.JIRA_API_TOKEN ?? file.apiToken;
+  // Optional default project; per-call project_key overrides it.
   const projectKey = process.env.JIRA_PROJECT_KEY ?? file.projectKey;
 
   const missing: string[] = [];
   if (!baseUrlRaw?.trim()) missing.push("baseUrl / JIRA_BASE_URL");
   if (!userEmail?.trim()) missing.push("userEmail / JIRA_USER_EMAIL");
   if (!apiToken?.trim()) missing.push("apiToken / JIRA_API_TOKEN");
-  if (!projectKey?.trim()) missing.push("projectKey / JIRA_PROJECT_KEY");
 
   if (missing.length > 0) {
     log(
@@ -80,7 +81,7 @@ function loadConfig(): AppConfig {
     apiBase: `${baseUrl}/rest/api/2`,
     userEmail: userEmail!,
     apiToken: apiToken!,
-    projectKey: projectKey!,
+    projectKey: projectKey?.trim() || undefined,
     storyIssueType:
       process.env.JIRA_STORY_ISSUE_TYPE ?? file.storyIssueType ?? "Story",
     outlineLinkField:

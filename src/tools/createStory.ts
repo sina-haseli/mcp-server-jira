@@ -5,7 +5,13 @@ import { config } from "../config";
 import { browseUrl, http } from "../jira/client";
 import { fail, ok, toToolError } from "../jira/errors";
 import { log } from "../logger";
-import { PRIORITY_VALUES, Priority, registerTool } from "./shared";
+import {
+  PRIORITY_VALUES,
+  Priority,
+  projectKeyField,
+  registerTool,
+  resolveProject,
+} from "./shared";
 
 interface CreateStoryArgs {
   summary: string;
@@ -15,6 +21,7 @@ interface CreateStoryArgs {
   priority: Priority;
   story_points?: number;
   outline_doc_url?: string;
+  project_key?: string;
 }
 
 const shape: z.ZodRawShape = {
@@ -35,6 +42,7 @@ const shape: z.ZodRawShape = {
     .url()
     .optional()
     .describe("Optional URL of the Outline PRD doc to link back to"),
+  project_key: projectKeyField,
 };
 
 export function registerCreateStory(server: McpServer): void {
@@ -51,6 +59,8 @@ export function registerCreateStory(server: McpServer): void {
     },
     async (rawArgs) => {
       const args = rawArgs as unknown as CreateStoryArgs;
+      const project = resolveProject(args.project_key);
+      if ("error" in project) return project.error;
       try {
         const descriptionLines = [
           args.description,
@@ -63,7 +73,7 @@ export function registerCreateStory(server: McpServer): void {
         }
 
         const fields: Record<string, unknown> = {
-          project: { key: config.projectKey },
+          project: { key: project.key },
           issuetype: { name: config.storyIssueType },
           summary: args.summary,
           description: descriptionLines.join("\n"),

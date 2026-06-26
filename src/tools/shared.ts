@@ -1,7 +1,8 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 
-import { ToolResult, ok } from "../jira/errors";
+import { config } from "../config";
+import { ToolResult, fail, ok } from "../jira/errors";
 
 export const PRIORITY_VALUES = [
   "Highest",
@@ -84,3 +85,32 @@ export const confirmField = z
   .describe(
     "Must be set to true to actually perform this irreversible/high-impact action. If omitted, the tool returns a warning instead of acting."
   );
+
+/** Reusable Zod field for the optional per-call project override. */
+export const projectKeyField = z
+  .string()
+  .optional()
+  .describe(
+    "Project key to target (e.g. \"PRD\"). Defaults to the configured JIRA_PROJECT_KEY if omitted."
+  );
+
+/**
+ * Resolve the effective project key: per-call argument first, then the
+ * configured default. Returns `{ key }` on success, or `{ error }` (a ready
+ * ToolResult) when neither is available.
+ */
+export function resolveProject(
+  argKey: string | undefined
+): { key: string } | { error: ToolResult } {
+  const key = argKey?.trim() || config.projectKey;
+  if (!key) {
+    return {
+      error: fail({
+        error: true,
+        message:
+          "No project specified and no default project configured. Pass project_key, or set JIRA_PROJECT_KEY / projectKey in the config.",
+      }),
+    };
+  }
+  return { key };
+}
