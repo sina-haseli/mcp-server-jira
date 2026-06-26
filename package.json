@@ -1,5 +1,5 @@
 {
-  "name": "@sina-haseli/mcp-server-jira",
+  "name": "@deomi/mcp-server-jira",
   "version": "1.0.0",
   "description": "MCP server for managing Jira Stories, sprints and boards in a self-hosted Jira instance (PRD automation workflow)",
   "license": "MIT",

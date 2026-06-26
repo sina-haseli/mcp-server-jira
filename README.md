@@ -1,6 +1,6 @@
-# @sina-haseli/mcp-server-jira
+# @deomi/mcp-server-jira
 
-[![npm version](https://img.shields.io/npm/v/@sina-haseli/mcp-server-jira.svg)](https://www.npmjs.com/package/@sina-haseli/mcp-server-jira)
+[![npm version](https://img.shields.io/npm/v/@deomi/mcp-server-jira.svg)](https://www.npmjs.com/package/@deomi/mcp-server-jira)
 [![CI](https://github.com/sina-haseli/mcp-server-jira/actions/workflows/ci.yml/badge.svg)](https://github.com/sina-haseli/mcp-server-jira/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
@@ -36,13 +36,13 @@ perform admin actions. Built for a PRD automation workflow, usable as a general 
 Once published, run it directly with `npx` (no global install needed):
 
 ```bash
-npx -y @sina-haseli/mcp-server-jira
+npx -y @deomi/mcp-server-jira
 ```
 
 Or install globally:
 
 ```bash
-npm install -g @sina-haseli/mcp-server-jira
+npm install -g @deomi/mcp-server-jira
 mcp-server-jira
 ```
 
@@ -131,7 +131,7 @@ Or, once published to npm, with no local checkout:
   "mcpServers": {
     "jira": {
       "command": "npx",
-      "args": ["-y", "@sina-haseli/mcp-server-jira"],
+      "args": ["-y", "@deomi/mcp-server-jira"],
       "env": {
         "JIRA_MCP_CONFIG": "D:\\projects\\mcp-server-jira\\jira-mcp.config.json"
       }
