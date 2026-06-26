@@ -1,19 +1,55 @@
 {
-  "name": "mcp-server-jira",
+  "name": "@sina-haseli/mcp-server-jira",
   "version": "1.0.0",
-  "description": "MCP server for managing Jira Stories in a self-hosted Jira instance (PRD automation workflow)",
+  "description": "MCP server for managing Jira Stories, sprints and boards in a self-hosted Jira instance (PRD automation workflow)",
+  "license": "MIT",
+  "author": "Sina Haseli <sina.haseli@gmail.com>",
+  "homepage": "https://github.com/sina-haseli/mcp-server-jira#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sina-haseli/mcp-server-jira.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sina-haseli/mcp-server-jira/issues"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "jira",
+    "jira-rest-api",
+    "claude",
+    "ai",
+    "agent",
+    "stories",
+    "sprints",
+    "burndown"
+  ],
+  "type": "commonjs",
   "main": "dist/index.js",
   "bin": {
     "mcp-server-jira": "dist/index.js"
   },
-  "type": "commonjs",
+  "files": [
+    "dist",
+    ".env.example",
+    "jira-mcp.config.example.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
-    "dev": "ts-node src/index.ts"
+    "dev": "ts-node src/index.ts",
+    "prepublishOnly": "npm run build"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "latest",
+    "@modelcontextprotocol/sdk": "^1.29.0",
     "axios": "^1.6.0",
     "dotenv": "^16.0.0",
     "zod": "^3.25.0"
